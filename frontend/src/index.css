@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    @apply bg-ink-900 text-ink_text font-tc antialiased;
+    background-image:
+      linear-gradient(rgba(124, 58, 237, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124, 58, 237, 0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  input { -webkit-appearance: none; }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+}
+
+@layer components {
+  .label {
+    @apply font-mono text-[10px] uppercase tracking-[0.16em] text-muted;
+  }
+  .num {
+    @apply font-num tabular-nums tracking-[-0.02em];
+  }
+
+  /* ---- 票券 3D 互動（還原參考稿） ---- */
+  .ticket-wrap { perspective: 1000px; }
+  .ticket {
+    @apply relative rounded-2xl;
+    transform-style: preserve-3d;
+    box-shadow: 0 20px 40px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.05);
+    transition: transform .6s cubic-bezier(.23,1,.32,1), box-shadow .6s cubic-bezier(.23,1,.32,1);
+  }
+  .ticket-wrap:hover .ticket,
+  .ticket.is-active {
+    transform: rotateX(5deg) rotateY(-10deg) scale(1.02);
+    box-shadow: 20px 20px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.1), -5px -5px 20px rgba(124,58,237,.45);
+  }
+  .ticket::after {
+    content: "";
+    @apply absolute inset-0 rounded-2xl pointer-events-none opacity-0;
+    background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,.08) 46%, transparent 62%);
+    transition: opacity .6s cubic-bezier(.23,1,.32,1);
+  }
+  .ticket-wrap:hover .ticket::after,
+  .ticket.is-active::after { @apply opacity-100; }
+
+  .ticket-top {
+    @apply bg-ink-800 rounded-t-2xl px-6 pt-7 pb-8;
+    background-image:
+      linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .ticket-bottom { @apply bg-ink-700 rounded-b-2xl px-6 pt-6 pb-6; }
+
+  .pop-1 { transform: translateZ(26px); }
+  .pop-2 { transform: translateZ(18px); }
+  .pop-3 { transform: translateZ(14px); }
+
+  /* ---- 撕裂線 ---- */
+  .perf { @apply relative h-0; }
+  .perf::before, .perf::after {
+    content: "";
+    @apply absolute w-[22px] h-[22px] rounded-full bg-ink-900;
+    top: -11px;
+  }
+  .perf::before { left: -11px; }
+  .perf::after { right: -11px; }
+  .perf > span {
+    @apply absolute left-4 right-4;
+    top: -1px; height: 1px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,.28) 0 5px, transparent 5px 11px);
+  }
+
+  /* ---- 票根（排行榜列 / 身分卡） ---- */
+  .stub {
+    @apply relative flex items-center gap-4 bg-ink-800 rounded-xl border border-white/5;
+    transition: transform .4s cubic-bezier(.23,1,.32,1), border-color .4s cubic-bezier(.23,1,.32,1), box-shadow .4s cubic-bezier(.23,1,.32,1);
+  }
+  .stub::before {
+    content: "";
+    @apply absolute w-[14px] h-[14px] rounded-full bg-ink-900;
+    left: -7px; top: 50%; transform: translateY(-50%);
+  }
+  .stub-hover:hover { transform: translateX(4px); border-color: rgba(255,255,255,.14); }
+  .stub-pick:hover {
+    transform: translateX(4px);
+    border-color: rgba(124,58,237,.6);
+    box-shadow: 0 0 30px rgba(124,58,237,.2);
+  }
+  .stub-pick:active { transform: scale(.98); }
+  .stub-me { border-color: rgba(124,58,237,.55); box-shadow: 0 0 22px rgba(124,58,237,.16); }
+
+  /* ---- 表單 ---- */
+  .field-input {
+    @apply w-full bg-transparent border-0 border-b border-white/15 pb-2 pt-2 text-[19px]
+           font-num font-medium tabular-nums outline-none;
+    transition: border-color .3s cubic-bezier(.23,1,.32,1);
+  }
+  .field-input:focus { @apply border-violet; }
+  .field-input:disabled { @apply text-muted; }
+
+  .cta {
+    @apply w-full bg-violet text-white rounded-xl py-4 text-[15px] font-medium tracking-[0.06em];
+    box-shadow: 0 0 24px rgba(124,58,237,.4);
+    transition: transform .3s cubic-bezier(.23,1,.32,1), box-shadow .3s cubic-bezier(.23,1,.32,1);
+  }
+  .cta:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(124,58,237,.55); }
+  .cta:active:not(:disabled) { transform: scale(.98); }
+  .cta:disabled { @apply bg-ink-700 text-muted; box-shadow: none; }
+
+  /* ---- 圖片佔位 ---- */
+  .img-slot {
+    @apply flex items-center justify-center rounded-xl border border-dashed border-white/10
+           bg-ink-800 text-muted font-mono text-[10px] tracking-[0.14em] uppercase;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
